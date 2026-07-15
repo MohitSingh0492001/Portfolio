@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohit Singh — Electrical Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0F2419;
+    --bg-deep: #0A1B12;
+    --panel: #16301F;
+    --panel-2: #1C3A26;
+    --hairline: rgba(232,230,222,0.14);
+    --copper: #C17A47;
+    --copper-bright: #E0954F;
+    --ink: #E8E6DE;
+    --ink-dim: #A9B8AC;
+    --patina: #7FB5A3;
+    --amber: #D9A441;
+    --radius: 3px;
+    --display: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(193,122,71,0.10), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--display);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* schematic dot-grid backdrop */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image: radial-gradient(rgba(232,230,222,0.05) 1px, transparent 1px);
+    background-size: 26px 26px;
+    pointer-events: none;
+    z-index:0;
+  }
+
+  a{ color: inherit; }
+  ::selection{ background: var(--copper); color: var(--bg-deep); }
+
+  :focus-visible{
+    outline: 2px solid var(--copper-bright);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(15,36,25,0.82);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 16px 32px;
+    max-width: 1120px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family: var(--mono); font-weight:600; letter-spacing: 0.02em;
+    text-decoration:none; color: var(--ink);
+  }
+  .brand .chip{
+    width:30px; height:30px; border-radius:6px;
+    border:1.5px solid var(--copper);
+    background: var(--panel);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-size:11px; font-weight:700; color: var(--copper-bright);
+    position:relative;
+  }
+  .brand .chip::before, .brand .chip::after{
+    content:""; position:absolute; width:6px; height:1.5px; background: var(--copper);
+  }
+  .brand .chip::before{ left:-6px; top:50%; }
+  .brand .chip::after{ right:-6px; top:50%; }
+  nav.links{ display:flex; gap: 28px; list-style:none; font-family: var(--mono); font-size: 13px; }
+  nav.links a{ text-decoration:none; color: var(--ink-dim); transition: color .2s; position:relative; }
+  nav.links a:hover{ color: var(--copper-bright); }
+  .nav-links{ display:flex; gap:28px; }
+  @media (max-width: 640px){ .nav-links{ display:none; } }
+
+  /* ---------- TRACE RAIL (signature element) ---------- */
+  .rail{
+    position:absolute; left:-56px; top:0; bottom:0; width:2px;
+    background: linear-gradient(to bottom, transparent, var(--hairline) 4%, var(--hairline) 96%, transparent);
+    display:none;
+  }
+  @media (min-width: 1000px){ .rail{ display:block; } }
+  .rail .pulse{
+    position:absolute; left:50%; top:0; width:6px; height:6px; margin-left:-3px;
+    border-radius:50%; background: var(--copper-bright);
+    box-shadow: 0 0 10px 2px rgba(224,149,79,0.7);
+    animation: travel 7s linear infinite;
+  }
+  @keyframes travel{
+    0%{ top:0; opacity:0; }
+    5%{ opacity:1; }
+    95%{ opacity:1; }
+    100%{ top:100%; opacity:0; }
+  }
+  .pad{
+    position:absolute; left:50%; width:11px; height:11px; margin-left:-5.5px;
+    border-radius:50%; background: var(--panel); border:2px solid var(--copper);
+    transition: border-color .3s, box-shadow .3s;
+  }
+  .pad.lit{ border-color: var(--copper-bright); box-shadow: 0 0 0 4px rgba(193,122,71,0.15); }
+  .designator{
+    position:absolute; left: 16px; top:-7px;
+    font-family: var(--mono); font-size:11px; color: var(--ink-dim);
+    white-space:nowrap; letter-spacing:.04em;
+  }
+
+  section{ position: relative; padding: 96px 0; }
+  section + section{ border-top: 1px solid var(--hairline); }
+
+  .eyebrow{
+    font-family: var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--copper-bright); display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background: var(--copper); }
+
+  h1,h2,h3{ font-family: var(--display); margin:0; letter-spacing:-0.01em; }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding-top: 84px; padding-bottom: 88px; }
+  .hero-top{
+    display:grid; grid-template-columns: 1fr 220px; gap: 48px; align-items:start;
+  }
+  @media (max-width: 760px){
+    .hero-top{ grid-template-columns: 1fr; }
+    .hero-photo{ order:-1; width:160px; margin-bottom: 8px; }
+  }
+  .hero-photo{
+    position:relative; width:220px;
+    border-radius:8px; border:2px solid var(--copper);
+    padding:5px; background: var(--panel);
+  }
+  .hero-photo img{
+    width:100%; aspect-ratio: 4/5; object-fit:cover; border-radius:4px; display:block;
+    filter: grayscale(12%) contrast(1.03);
+  }
+  .hero-photo::before, .hero-photo::after{
+    content:""; position:absolute; width:9px; height:1.5px; background: var(--copper);
+  }
+  .hero-photo::before{ left:-11px; top:28px; }
+  .hero-photo::after{ left:-11px; bottom:28px; }
+  .hero-photo .cap{
+    margin-top:8px; text-align:center; font-family: var(--mono); font-size:10.5px;
+    color: var(--ink-dim); letter-spacing:.06em;
+  }
+  .hero h1{
+    font-size: clamp(40px, 6.4vw, 74px);
+    font-weight:700; line-height:1.03;
+    max-width: 14ch;
+  }
+  .hero h1 .accent{ color: var(--copper-bright); }
+  .hero p.lede{
+    margin: 26px 0 34px; max-width: 56ch;
+    font-size: 18px; color: var(--ink-dim);
+  }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .btn{
+    font-family: var(--mono); font-size:13.5px; font-weight:500;
+    padding: 13px 22px; border-radius: var(--radius);
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .btn.primary{ background: var(--copper); color: var(--bg-deep); }
+  .btn.primary:hover{ background: var(--copper-bright); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(193,122,71,0.25); }
+  .btn.ghost{ border:1px solid var(--hairline); color: var(--ink); }
+  .btn.ghost:hover{ border-color: var(--copper); color: var(--copper-bright); }
+
+  /* oscilloscope trace */
+  .scope{ margin-top: 56px; border:1px solid var(--hairline); border-radius: var(--radius); background: var(--panel); overflow:hidden; }
+  .scope-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 10px 16px; border-bottom:1px solid var(--hairline);
+    font-family: var(--mono); font-size:11px; color: var(--ink-dim); letter-spacing:.06em;
+  }
+  .scope-head .dots{ display:flex; gap:6px; }
+  .scope-head .dots span{ width:7px; height:7px; border-radius:50%; background: var(--hairline); }
+  .scope svg{ display:block; width:100%; height:auto; }
+  .scope-path{
+    stroke: var(--patina); stroke-width:2; fill:none;
+    stroke-dasharray: 1400; stroke-dashoffset: 1400;
+    animation: draw 2.6s ease-out forwards .3s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid; grid-template-columns: 1.3fr 1fr; gap: 56px;
+  }
+  @media (max-width: 800px){ .about-grid{ grid-template-columns: 1fr; } }
+  .about-grid p{ color: var(--ink-dim); font-size: 16px; }
+  .about-grid p + p{ margin-top: 16px; }
+  .datasheet{
+    background: var(--panel); border:1px solid var(--hairline); border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  .datasheet h3{
+    font-family: var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color: var(--ink-dim); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--hairline);
+  }
+  .spec-row{ display:flex; justify-content:space-between; gap:12px; padding: 9px 0; font-size:14px; }
+  .spec-row + .spec-row{ border-top: 1px dashed var(--hairline); }
+  .spec-row dt{ color: var(--ink-dim); font-family: var(--mono); font-size:12.5px; }
+  .spec-row dd{ margin:0; text-align:right; }
+
+  /* ---------- EXPERTISE ---------- */
+  .skills-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; }
+  @media (max-width: 800px){ .skills-grid{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px){ .skills-grid{ grid-template-columns: 1fr; } }
+  .skill-card{
+    background: var(--panel); border:1px solid var(--hairline); border-radius: var(--radius);
+    padding: 20px; position:relative; transition: border-color .2s, transform .2s;
+  }
+  .skill-card:hover{ border-color: var(--copper); transform: translateY(-2px); }
+  .skill-card .tag{ font-family: var(--mono); font-size:11px; color: var(--copper-bright); letter-spacing:.06em; }
+  .skill-card h4{ margin: 10px 0 8px; font-size: 17px; font-family: var(--display); }
+  .skill-card p{ margin:0; font-size:14px; color: var(--ink-dim); }
+
+  /* ---------- PROJECTS ---------- */
+  .projects{ display:flex; flex-direction:column; gap:20px; }
+  .project{
+    display:grid; grid-template-columns: 120px 1fr; gap:28px;
+    background: var(--panel); border:1px solid var(--hairline); border-radius: var(--radius);
+    padding: 26px 28px; transition: border-color .2s, transform .2s;
+    position:relative;
+  }
+  .project:hover{ border-color: var(--copper); }
+  .project::before, .project::after{
+    content:""; position:absolute; width:8px; height:8px; border:1.5px solid var(--hairline);
+    border-radius:1px;
+  }
+  .project::before{ top:8px; left:8px; }
+  .project::after{ bottom:8px; right:8px; }
+  @media (max-width: 700px){ .project{ grid-template-columns: 1fr; gap:12px; } }
+  .project .ref{
+    font-family: var(--mono); color: var(--copper-bright); font-size:14px; font-weight:600;
+  }
+  .project .ref small{ display:block; color: var(--ink-dim); font-size:11px; font-weight:400; margin-top:4px; }
+  .project h3{ font-size:20px; margin-bottom:8px; }
+  .project p{ color: var(--ink-dim); font-size:14.5px; margin:0 0 14px; }
+  .taglist{ display:flex; gap:8px; flex-wrap:wrap; }
+  .taglist span{
+    font-family: var(--mono); font-size:11px; padding:4px 9px; border-radius:20px;
+    border:1px solid var(--hairline); color: var(--ink-dim);
+  }
+
+  /* ---------- EXPERIENCE ---------- */
+  .timeline{ display:flex; flex-direction:column; }
+  .tnode{ display:grid; grid-template-columns: 130px 1fr; gap:28px; padding: 22px 0; }
+  .tnode + .tnode{ border-top:1px dashed var(--hairline); }
+  @media (max-width: 640px){ .tnode{ grid-template-columns: 1fr; gap:6px; } }
+  .tnode .when{ font-family: var(--mono); font-size:13px; color: var(--ink-dim); }
+  .tnode h4{ font-size:17px; margin:0 0 6px; }
+  .tnode .role{ color: var(--copper-bright); font-family: var(--mono); font-size:12.5px; margin-bottom:8px; display:block; }
+  .tnode p{ margin:0; color: var(--ink-dim); font-size:14.5px; }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{ padding: 80px 0 60px; }
+  .terminal{
+    display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--hairline); border-radius: var(--radius); overflow:hidden;
+  }
+  .pin{
+    flex:1; min-width:180px; padding: 22px 24px; text-decoration:none; color: var(--ink);
+    border-right:1px solid var(--hairline); transition: background .2s;
+  }
+  .pin:last-child{ border-right:none; }
+  .pin:hover{ background: var(--panel-2); }
+  .pin .label{ font-family: var(--mono); font-size:11px; color: var(--ink-dim); letter-spacing:.08em; text-transform:uppercase; }
+  .pin .value{ margin-top:6px; font-size:15px; font-weight:500; }
+  .fine{ margin-top:28px; font-family: var(--mono); font-size:12px; color: var(--ink-dim); text-align:center; }
+
+  .reveal{ opacity:0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="#top">
+      <span class="chip">MS</span>
+      MOHIT SINGH
+    </a>
+    <ul class="nav-links" style="list-style:none; margin:0; padding:0;">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap" id="top">
+  <div class="rail" aria-hidden="true">
+    <div class="pulse"></div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <p class="eyebrow">U1 — Power &amp; Automation Systems</p>
+        <h1>Electrical engineering graduate building for power plants and <span class="accent">industrial automation</span>.</h1>
+        <p class="lede">I work across power generation, PCB manufacturing, and instrumentation &amp; control — from switchyards to SCADA screens. Based in Gorakhpur, Uttar Pradesh, and looking for roles in power and automation.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#work">View projects →</a>
+          <a class="btn ghost" href="resume.pdf" download>Download resume</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="profile.jpg" alt="Mohit Singh">
+        <div class="cap">MOHIT SINGH</div>
+      </div>
+    </div>
+
+    <div class="scope">
+      <div class="scope-head">
+        <span>CH1 · 5V/DIV · 2ms/DIV</span>
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+      <svg viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="70" x2="700" y2="70" stroke="rgba(232,230,222,0.08)" stroke-width="1"/>
+        <path class="scope-path" d="M0,70 L40,70 L60,20 L80,120 L100,70 L160,70 C 190,70 190,30 220,30 C 250,30 250,110 280,110 C 310,110 310,70 340,70 L 420,70 L 440,10 L 460,130 L 480,70 L560,70 C 590,70 590,40 620,40 C 650,40 650,100 680,100 L700,70" />
+      </svg>
+    </div>
+  </section>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <p class="eyebrow">R1 — About</p>
+    <div class="about-grid reveal">
+      <div>
+        <h2 style="font-size: 32px; margin-bottom:20px;">From the switchyard to the SMT line.</h2>
+        <p>I'm an electrical engineering graduate with hands-on exposure to power plant systems, electrical equipment, instrumentation, and industrial electronics. I've spent internships inside one of India's largest thermal power plants and on a live SMT production line — two very different views of how electricity actually gets made and put to use.</p>
+        <p>I'm building a career at the intersection of power and automation: strong on fundamentals like transformers, generators, and switchyards, and equally comfortable with PLC/SCADA basics and PCB testing. I care about reliable, well-maintained systems and I learn fast on unfamiliar equipment.</p>
+      </div>
+      <div class="datasheet">
+        <h3>Spec Sheet</h3>
+        <dl style="margin:0;">
+          <div class="spec-row"><dt>LOCATION</dt><dd>Gorakhpur, Uttar Pradesh</dd></div>
+          <div class="spec-row"><dt>FOCUS</dt><dd>Power systems, automation</dd></div>
+          <div class="spec-row"><dt>EDUCATION</dt><dd>B.Tech EE, 2022–2026</dd></div>
+          <div class="spec-row"><dt>TOOLS</dt><dd>Excel, Word, PowerPoint</dd></div>
+          <div class="spec-row"><dt>CERT.</dt><dd>Python for Beginners · RPA (NIELIT)</dd></div>
+          <div class="spec-row"><dt>STATUS</dt><dd style="color:var(--patina)">Open to internships &amp; entry roles</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="expertise">
+  <div class="wrap">
+    <p class="eyebrow">R2 — Expertise</p>
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <span class="tag">01 · POWER</span>
+        <h4>Operation &amp; Maintenance</h4>
+        <p>Hands-on exposure to power generation, plant operation, and maintenance practices at a utility scale.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">02 · GRID</span>
+        <h4>Transformers &amp; Switchyards</h4>
+        <p>Working knowledge of transformers, generators, and switchyard equipment and safety procedures.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">03 · CONTROL</span>
+        <h4>PLC &amp; SCADA Basics</h4>
+        <p>Foundational knowledge of control and instrumentation systems used in industrial automation.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">04 · HARDWARE</span>
+        <h4>SMT &amp; PCB Testing</h4>
+        <p>Practical experience with PCB manufacturing, SMT line operation, reflow soldering, and inspection.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">05 · SAFETY</span>
+        <h4>Industrial &amp; Safety Standards</h4>
+        <p>Trained in environment, health, and safety measures within live industrial and power plant settings.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">06 · SOFTWARE</span>
+        <h4>Tools &amp; Automation</h4>
+        <p>Proficient in MS Excel, Word, and PowerPoint; certified in Python fundamentals and RPA.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <p class="eyebrow">R3 — Selected Work</p>
+    <div class="projects reveal">
+
+      <div class="project">
+        <div class="ref">P1<small>Web app</small></div>
+        <div>
+          <h3>Real-Time Web-Based BMS Monitoring for EV Charging Station</h3>
+          <p>A web-based battery management system that lets users monitor live battery charging status and check charging station slot availability in real time.</p>
+          <div class="taglist"><span>Battery management</span><span>EV charging</span><span>Real-time monitoring</span></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="ref">P2<small>Prototype</small></div>
+        <div>
+          <h3>Fault Detection in a Transmission Line</h3>
+          <p>A prototype system for identifying and locating faults in an electrical power transmission line, aimed at ensuring reliable, continuous power supply.</p>
+          <div class="taglist"><span>Fault detection</span><span>Transmission systems</span><span>Power reliability</span></div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="ref">P3<small>Prototype</small></div>
+        <div>
+          <h3>Tesla Tower</h3>
+          <p>A prototype wireless transmission system designed to transmit electrical power and communication signals across long distances without wires.</p>
+          <div class="taglist"><span>Wireless power</span><span>Long-range transmission</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <p class="eyebrow">R4 — Experience</p>
+    <div class="timeline reveal">
+      <div class="tnode">
+        <div class="when">Jul '25 — Aug '25</div>
+        <div>
+          <span class="role">Internship</span>
+          <h4>Sahasra Electronic Solution Limited</h4>
+          <p>Acquired practical knowledge of electrical components, PCB manufacturing, and assembly lines; studied SMT line operation, reflow soldering, and inspection methods.</p>
+        </div>
+      </div>
+      <div class="tnode">
+        <div class="when">Jun '25 — Jul '25</div>
+        <div>
+          <span class="role">Internship</span>
+          <h4>NTPC Vindhyachal <span style="font-weight:400; color:var(--ink-dim);">— India's largest thermal power plant</span></h4>
+          <p>Gained exposure to the power generation process, operation and maintenance practices, control and instrumentation systems, and environment and safety measures.</p>
+        </div>
+      </div>
+      <div class="tnode">
+        <div class="when">2022 — 2026</div>
+        <div>
+          <span class="role">B.Tech, Electrical Engineering · CGPA 7.96</span>
+          <h4>KIPM College of Engineering and Technology</h4>
+          <p>Core coursework in power systems, instrumentation, and industrial electronics.</p>
+        </div>
+      </div>
+      <div class="tnode">
+        <div class="when">2021 — 2022</div>
+        <div>
+          <span class="role">Intermediate (CBSE) · 81.8%</span>
+          <h4>Urmil Unique Central Academy</h4>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="tnode">
+        <div class="when">2019 — 2020</div>
+        <div>
+          <span class="role">High School (CBSE) · 81.1%</span>
+          <h4>Urmil Unique Central Academy</h4>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <p class="eyebrow">R5 — Contact</p>
+    <div class="terminal reveal">
+      <a class="pin" href="mailto:singhmohit0492001@gmail.com">
+        <div class="label">Email</div>
+        <div class="value">singhmohit0492001@gmail.com</div>
+      </a>
+      <a class="pin" href="tel:+918726237715">
+        <div class="label">Phone</div>
+        <div class="value">+91 87262 37715</div>
+      </a>
+      <a class="pin" href="https://www.linkedin.com/in/mohit-singh-070845336" target="_blank" rel="noopener">
+        <div class="label">LinkedIn</div>
+        <div class="value">/in/mohit-singh</div>
+      </a>
+      <a class="pin" href="#about">
+        <div class="label">Location</div>
+        <div class="value">Gorakhpur, UP</div>
+      </a>
+    </div>
+    <p class="fine">© 2026 Mohit Singh</p>
+  </div>
+</footer>
+
+<script>
+  // Reveal-on-scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Position pads on the trace rail to align with each section, light them as they pass
+  const rail = document.querySelector('.rail');
+  const sections = ['about','expertise','work','experience','contact'].map(id => document.getElementById(id));
+  const designators = ['R1 · ABOUT','R2 · SKILLS','R3 · WORK','R4 · EXPERIENCE','R5 · CONTACT'];
+
+  function layoutPads(){
+    if(!rail) return;
+    rail.querySelectorAll('.pad, .designator').forEach(n => n.remove());
+    const railRect = rail.getBoundingClientRect();
+    const railTop = window.scrollY + railRect.top;
+    sections.forEach((sec, i) => {
+      if(!sec) return;
+      const r = sec.getBoundingClientRect();
+      const top = window.scrollY + r.top - railTop;
+      const pad = document.createElement('div');
+      pad.className = 'pad';
+      pad.style.top = top + 'px';
+      pad.dataset.idx = i;
+      rail.appendChild(pad);
+      const label = document.createElement('div');
+      label.className = 'designator';
+      label.style.top = (top - 7) + 'px';
+      label.textContent = designators[i];
+      label.style.opacity = '0';
+      label.style.transition = 'opacity .3s';
+      label.dataset.label = i;
+      rail.appendChild(label);
+    });
+  }
+  window.addEventListener('load', layoutPads);
+  window.addEventListener('resize', layoutPads);
+
+  const litIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const idx = sections.indexOf(e.target);
+      const pad = rail?.querySelector(`.pad[data-idx="${idx}"]`);
+      const label = rail?.querySelector(`.designator[data-label="${idx}"]`);
+      if(e.isIntersecting){ pad?.classList.add('lit'); if(label) label.style.opacity = '1'; }
+      else { pad?.classList.remove('lit'); if(label) label.style.opacity = '0'; }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => s && litIO.observe(s));
+</script>
+
+</body>
+</html>
